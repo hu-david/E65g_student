@@ -15,15 +15,13 @@ public protocol GridViewDataSource {
 @IBDesignable class GridView: UIView {
 
     var gridDataSource: GridViewDataSource?
-    @IBInspectable var size = 20
+    @IBInspectable var size = 10
     @IBInspectable var livingColor = UIColor.green
-    @IBInspectable var emptyColor = UIColor.darkGray
-    @IBInspectable var bornColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.6)
-    @IBInspectable var diedColor = UIColor(white: 0.333, alpha: 0.6)
+    @IBInspectable var emptyColor = UIColor.clear
+    @IBInspectable var bornColor = UIColor(red: 0.0, green: 1.0, blue: 0.0, alpha: 0.4)
+    @IBInspectable var diedColor = UIColor(white: 0.333, alpha: 0.4)
     @IBInspectable var gridColor = UIColor.black
     @IBInspectable var gridWidth = CGFloat(2.0)
-    
-    var grid = Grid(20, 20)
     
     override func draw(_ rect: CGRect) {
         let cellSize = CGSize(
@@ -47,25 +45,31 @@ public protocol GridViewDataSource {
         (0 ..< size).forEach { i in
             (0 ..< size).forEach { j in
                 let origin = CGPoint(
-                    x: base.x + (CGFloat(j) * cellSize.width),
-                    y: base.y + (CGFloat(i) * cellSize.height)
+                    x: base.x + (CGFloat(j) * cellSize.width) + gridWidth,
+                    y: base.y + (CGFloat(i) * cellSize.height) + gridWidth
                 )
-                let cellRect = CGRect(
+                let ovalSize = CGSize(
+                    width: cellSize.width - 2 * gridWidth,
+                    height: cellSize.height - 2 * gridWidth
+                )
+                let ovalRect = CGRect(
                     origin: origin,
-                    size: cellSize
+                    size: ovalSize
                 )
-                let path = UIBezierPath(ovalIn: cellRect)
-                switch grid[(i,j)] {
-                case .alive:
-                    livingColor.setFill()
-                case .empty:
-                    emptyColor.setFill()
-                case .born:
-                    bornColor.setFill()
-                case .died:
-                    diedColor.setFill()
+                let path = UIBezierPath(ovalIn: ovalRect)
+                if let grid = gridDataSource {
+                    switch grid[(i,j)] {
+                    case .alive:
+                        livingColor.setFill()
+                    case .empty:
+                        emptyColor.setFill()
+                    case .born:
+                        bornColor.setFill()
+                    case .died:
+                        diedColor.setFill()
+                    }
+                    path.fill()
                 }
-                path.fill()
             }
         }
     }
@@ -91,30 +95,37 @@ public protocol GridViewDataSource {
         lastTouchedPosition = nil
     }
     
-    typealias Position = (row: Int, col: Int)
-    var lastTouchedPosition: Position?
+    var lastTouchedPosition: GridPosition?
     
-    func process(touches: Set<UITouch>) -> Position? {
+    func process(touches: Set<UITouch>) -> GridPosition? {
+        let touchY = touches.first!.location(in: self.superview).y
+        let touchX = touches.first!.location(in: self.superview).x
+        guard touchX > frame.origin.x && touchX < (frame.origin.x + frame.size.width) else { return nil }
+        guard touchY > frame.origin.y && touchY < (frame.origin.y + frame.size.height) else { return nil }
+        
         guard touches.count == 1 else { return nil }
         let pos = convert(touch: touches.first!)
+        
         guard lastTouchedPosition?.row != pos.row
             || lastTouchedPosition?.col != pos.col
             else { return pos }
         
-        grid[(pos.row,pos.col)] = grid[(pos.row,pos.col)].isAlive ? .empty : .alive
-        setNeedsDisplay()
+        if gridDataSource != nil {
+            gridDataSource![pos.row, pos.col] = gridDataSource![pos.row, pos.col].isAlive ? .empty : .alive
+            setNeedsDisplay()
+        }
         return pos
     }
     
-    func convert(touch: UITouch) -> Position {
+    func convert(touch: UITouch) -> GridPosition {
         let touchY = touch.location(in: self).y
         let gridHeight = frame.size.height
         let row = touchY / gridHeight * CGFloat(size)
         let touchX = touch.location(in: self).x
         let gridWidth = frame.size.width
         let col = touchX / gridWidth * CGFloat(size)
-        let position = (row: Int(row), col: Int(col))
-        return position
+        
+        return GridPosition(row: Int(row), col: Int(col))
     }
 
 }

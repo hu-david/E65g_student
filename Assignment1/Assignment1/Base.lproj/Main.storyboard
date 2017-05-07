@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1421" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina4_0" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -78,7 +78,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="249.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AoF-kT-haM" userLabel="GenerationStack">
-                                                <rect key="frame" x="42" y="30" width="236" height="30"/>
+                                                <rect key="frame" x="42" y="30.5" width="236" height="30"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Generation: " textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ndb-Td-7E3" userLabel="GenerationLabel">
                                                         <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
@@ -102,7 +102,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2FH-ER-Goz" userLabel="GridSizeStack">
-                                                <rect key="frame" x="42" y="80.5" width="236" height="30"/>
+                                                <rect key="frame" x="42" y="80" width="236" height="30"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Grid Size:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yTj-Gd-Lpd" userLabel="GridSizeLabel">
                                                         <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
@@ -123,7 +123,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W8S-tv-dcU" userLabel="FramesStack">
-                                                <rect key="frame" x="42" y="130.5" width="236" height="30"/>
+                                                <rect key="frame" x="42" y="130" width="236" height="30"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frames/second:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ncu-C7-WIt" userLabel="Frames/secondLabel">
                                                         <rect key="frame" x="0.0" y="0.0" width="124" height="30"/>
@@ -144,7 +144,7 @@
                                                 </subviews>
                                             </stackView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dyY-M0-S5Q" userLabel="Reset">
-                                                <rect key="frame" x="140.5" y="190.5" width="39" height="30"/>
+                                                <rect key="frame" x="140.5" y="190" width="39" height="30"/>
                                                 <state key="normal" title="Reset"/>
                                             </button>
                                         </subviews>
