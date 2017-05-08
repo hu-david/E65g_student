@@ -2,8 +2,7 @@
 //  StatisticsViewController.swift
 //  FinalProject
 //
-//  Created by David Hu on 5/5/17.
-//  Copyright © 2017 Harvard Division of Continuing Education. All rights reserved.
+//  David Hu
 //
 
 import UIKit
@@ -18,12 +17,12 @@ class StatisticsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tabBarController?.tabBar.backgroundColor = UIColor.blue
+        self.tabBarController?.tabBar.backgroundColor = UIColor.cyan
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
         update(grid: StandardEngine.engine.grid)
         let nc = NotificationCenter.default
         let name = Notification.Name(rawValue: "EngineUpdate")

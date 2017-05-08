@@ -1,9 +1,8 @@
 //
 //  InstrumentationViewController.swift
 //  FinalProject
-//  David Hu
 //
-//  uses 1 controller for rows/cols requested by Prof. Simmons in Apr 12 discussion.
+//  David Hu
 //
 
 import UIKit
@@ -13,6 +12,8 @@ struct SavedGrid {
     var grid: [[Int]]
     var size: Int
 }
+
+let finalProjectURL = "https://dl.dropboxusercontent.com/u/7544475/S65g.json"
 
 class InstrumentationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -29,8 +30,13 @@ class InstrumentationViewController: UIViewController, UITableViewDelegate, UITa
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.tabBarController?.tabBar.backgroundColor = UIColor.cyan
+        self.tabBarController?.tabBar.backgroundColor = UIColor.blue
         navigationController?.isNavigationBarHidden = false
+        
+        sizeTextField.text = "\(StandardEngine.engine.rows)"
+        sizeStepper.value = Double(StandardEngine.engine.rows)
+        refreshSlider.value = Float(1.0 / StandardEngine.engine.refreshRate)
+        refreshSwitch.isOn = StandardEngine.engine.refreshOn
     }
     
     override func viewDidLoad() {
@@ -41,6 +47,53 @@ class InstrumentationViewController: UIViewController, UITableViewDelegate, UITa
         refreshSlider.value = Float(1.0 / StandardEngine.engine.refreshRate)
         refreshSwitch.isOn = StandardEngine.engine.refreshOn
         
+        let nc = NotificationCenter.default
+        let name = Notification.Name(rawValue: "SaveUpdate")
+        nc.addObserver(forName: name,
+                       object: nil,
+                       queue: nil) { (n) in
+                        guard let save: SavedGrid = n.object as! SavedGrid? else {return}
+                        self.saves.insert(save, at: 0)
+                        self.tableView.reloadData()
+        }
+        let fetcher = Fetcher()
+        fetcher.fetchJSON(url: URL(string:finalProjectURL)!) { (json: Any?, message: String?) in
+            guard message == nil else {
+                print(message ?? "nil")
+                return
+            }
+            guard let json = json else {
+                print("no json")
+                return
+            }
+            let jsonArray = json as! NSArray
+            for i in 0..<jsonArray.count {
+                let jsonDictionary = jsonArray[i] as! NSDictionary
+                let jsonTitle = jsonDictionary["title"] as! String
+                let jsonContents = jsonDictionary["contents"] as! [[Int]]
+                
+                var max = 0
+                for j in 0..<jsonContents.count {
+                    if jsonContents[j][0] > max {
+                        max = jsonContents[j][0]
+                    }
+                    if jsonContents[j][1] > max {
+                        max = jsonContents[j][1]
+                    }
+                }
+                var grid = Array(repeating: Array(repeating: 0, count: 2*max), count: 2*max)
+                for j in 0..<jsonContents.count {
+                    let row = jsonContents[j][0]
+                    let col = jsonContents[j][1]
+                    grid[row][col] = 1
+                }
+                let savedGrid = SavedGrid(title: jsonTitle, grid: grid, size: 2*max)
+                self.saves.append(savedGrid)
+            }
+            OperationQueue.main.addOperation {
+                self.tableView.reloadData()
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,22 +131,29 @@ class InstrumentationViewController: UIViewController, UITableViewDelegate, UITa
         guard let text = saveSize.text else { return }
         guard let val = Int(text) else {
             showErrorAlert(withMessage: "Invalid value: \(text), please try again.") {
-                self.saveSize.text = "size"
+                self.saveSize.text = "Size"
             }
             return
         }
-        guard let t = saveSize.text else { return }
-        
-        var grid: [[Int]]
-        for i in 0..<val {
-            for j in 0..<val {
-                grid[i][j] = 0
+        guard val > 1 else {
+            showErrorAlert(withMessage: "Invalid value: \(text), please try again.") {
+                self.saveSize.text = "Size"
             }
+            return
+        }
+        guard let t = saveTitle.text else { return }
+        guard t != "" else {
+            showErrorAlert(withMessage: "Invalid value: \(t), please try again.") {
+                self.saveTitle.text = "Title"
+            }
+            return
         }
         
-        saves[0] = SavedGrid(title: t,
-                              grid: grid,
-                              size: val)
+        let grid = Array(repeating: Array(repeating: 0, count: val), count: val)
+        
+        let newSave = SavedGrid(title: t, grid: grid, size: val)
+        saves.insert(newSave, at: 0)
+        tableView.reloadData()
     }
     
     func showErrorAlert(withMessage msg:String, action: (() -> Void)? ) {
@@ -127,14 +187,23 @@ class InstrumentationViewController: UIViewController, UITableViewDelegate, UITa
         return cell
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            saves.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.reloadData()
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        navigationItem.title = "Cancel"
         let indexPath = tableView.indexPathForSelectedRow
         if let indexPath = indexPath {
             let save = saves[indexPath.row]
             if let vc = segue.destination as? GridEditorViewController {
-                vc.fruitValue = fruitValue
+                vc.savedGrid = save
                 vc.saveClosure = { newValue in
-                    data[indexPath.section][indexPath.row] = newValue
+                    self.saves[indexPath.row] = newValue
                     self.tableView.reloadData()
                 }
             }

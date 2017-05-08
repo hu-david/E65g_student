@@ -1,6 +1,8 @@
 //
 //  GridProtocol.swift
-//  Lecture7
+//  Final Project
+//
+//  David Hu
 //
 
 public struct GridPosition: Equatable {

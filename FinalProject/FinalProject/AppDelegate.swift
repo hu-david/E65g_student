@@ -2,8 +2,7 @@
 //  AppDelegate.swift
 //  FinalProject
 //
-//  Created by Van Simmons on 1/15/17.
-//  Copyright © 2017 Harvard Division of Continuing Education. All rights reserved.
+//  David Hu
 //
 
 import UIKit
@@ -14,7 +13,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        let defaults = UserDefaults.standard
+        if let save = defaults.array(forKey: "Grid") {
+            let savedGrid = SavedGrid(title: "config", grid: save as! [[Int]], size: save.count)
+            _ = StandardEngine.engine.load(savedGrid: savedGrid)
+        }
         return true
     }
 

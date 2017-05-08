@@ -1,9 +1,8 @@
 //
 //  GridView.swift
-//  Assignment3
+//  Final Project
 //
-//  Created by David Hu on 3/22/17.
-//  Copyright © 2017 Harvard Division of Continuing Education. All rights reserved.
+//  David Hu
 //
 
 import UIKit
@@ -29,6 +28,11 @@ public protocol GridViewDataSource {
             height: rect.size.height / CGFloat(size)
         )
         let base = rect.origin
+        
+        gridWidth = CGFloat(2.0)
+        if size > 10 {
+            gridWidth = CGFloat(20.0/Float(size))
+        }
         
         (0 ... size).forEach {
             drawLine(

@@ -1,9 +1,8 @@
 //
-//  FirstViewController.swift
-//  FinalProject
+//  SimulatonViewController.swift
+//  Final Project
 //
-//  Created by Van Simmons on 1/15/17.
-//  Copyright © 2017 Harvard Division of Continuing Education. All rights reserved.
+//  David Hu
 //
 
 import UIKit
@@ -11,6 +10,8 @@ import UIKit
 class SimulationViewController: UIViewController, GridViewDataSource, EngineDelegate {
     
     @IBOutlet weak var gridView: GridView!
+    
+    let defaults = UserDefaults.standard
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -22,21 +23,30 @@ class SimulationViewController: UIViewController, GridViewDataSource, EngineDele
         super.viewDidLoad()
         
         gridView.size = StandardEngine.engine.grid.size.rows
-        StandardEngine.engine.delegate = self
-        gridView.setNeedsDisplay()
         gridView.gridDataSource = self
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        StandardEngine.engine.delegate = self
+        self.gridView.setNeedsDisplay()
         
-        gridView.size = StandardEngine.engine.grid.size.rows
-        StandardEngine.engine.delegate = self
-        gridView.setNeedsDisplay()
-        gridView.gridDataSource = self
+        let nc = NotificationCenter.default
+        let name = Notification.Name(rawValue: "EngineUpdate")
+        nc.addObserver(
+            forName: name,
+            object: nil,
+            queue: nil) { (n) in
+                self.gridView.size = StandardEngine.engine.grid.size.rows
+                self.gridView.setNeedsDisplay()
+        }
+        let loadName = Notification.Name(rawValue: "LoadUpdate")
+        nc.addObserver(forName: loadName, object: nil, queue: nil) { (n) in
+            guard let save: SavedGrid = n.object as! SavedGrid? else {return}
+            _ = StandardEngine.engine.load(savedGrid: save)
+            self.gridView.size = StandardEngine.engine.grid.size.rows
+            self.gridView.setNeedsDisplay()
+        }
     }
     
     func engineDidUpdate(withGrid: GridProtocol) {
+        gridView.size = StandardEngine.engine.grid.size.rows
         self.gridView.setNeedsDisplay()
     }
     
@@ -51,6 +61,24 @@ class SimulationViewController: UIViewController, GridViewDataSource, EngineDele
     
     @IBAction func step(_ sender: UIButton) {
         _ = StandardEngine.engine.step()
-        gridView.setNeedsDisplay()
+        self.gridView.setNeedsDisplay()
+    }
+    
+    @IBAction func save(_ sender: UIButton) {
+        let save = SavedGrid(title: "saved simulation",
+                             grid: StandardEngine.engine.save(),
+                             size: StandardEngine.engine.grid.size.rows)
+        
+        let nc = NotificationCenter.default
+        let name = Notification.Name(rawValue: "SaveUpdate")
+        let n = Notification(name: name, object: save)
+        nc.post(n)
+        
+        defaults.set(save.grid, forKey: "Grid")
+    }
+    
+    @IBAction func reset(_ sender: UIButton) {
+        StandardEngine.engine.reset()
+        self.gridView.setNeedsDisplay()
     }
 }

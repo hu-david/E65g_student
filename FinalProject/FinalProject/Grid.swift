@@ -1,6 +1,7 @@
 //
 //  Grid.swift
 //  Final Project
+//
 //  David Hu
 //  
 
@@ -137,7 +138,7 @@ protocol EngineDelegate {
 }
 
 protocol EngineProtocol {
-    var grid: GridProtocol { get set }
+    var grid: GridProtocol { get }
     var delegate: EngineDelegate? { get set }
     var refreshTimer: Timer? { get set }
     var refreshRate: Double { get set }
@@ -147,8 +148,11 @@ protocol EngineProtocol {
     //var updateClosure: ((Grid) -> Void)? { get set }
     func step() -> GridProtocol
     func setSize(rows: Int, cols: Int)
+    func reset()
     func setTimer(refreshOn: Bool)
     func setRate(rate: Double)
+    func load(savedGrid: SavedGrid) -> (GridProtocol)
+    func save() -> ([[Int]])
 }
 
 class StandardEngine: EngineProtocol {
@@ -207,6 +211,13 @@ class StandardEngine: EngineProtocol {
         grid = Grid(GridSize(rows: rows, cols: cols))
         self.rows = rows
         self.cols = cols
+        delegate?.engineDidUpdate(withGrid: grid)
+        notify()
+    }
+    
+    func reset() {
+        grid = Grid(GridSize(rows: rows, cols: cols))
+        delegate?.engineDidUpdate(withGrid: grid)
         notify()
     }
     
@@ -220,4 +231,55 @@ class StandardEngine: EngineProtocol {
         refreshTimer?.invalidate()
         refreshRate = rate
     }
+    
+    func load(savedGrid: SavedGrid) -> (GridProtocol) {
+        setSize(rows: savedGrid.size, cols: savedGrid.size)
+        
+        for col in 0..<savedGrid.size {
+            for row in 0..<savedGrid.size {
+                switch savedGrid.grid[row][col] {
+                case 1:
+                    grid[row,col] = CellState.alive
+                case 2:
+                    grid[row,col] = CellState.born
+                case 3:
+                    grid[row,col] = CellState.died
+                default:
+                    break
+                }
+            }
+        }
+        notify()
+        return grid
+    }
+    
+    func save() -> ([[Int]]) {
+        var save: ([[Int]]) = Array(repeating: Array(repeating: 0, count: grid.size.cols), count: grid.size.rows)
+        
+        for r in 0..<grid.size.rows {
+            for c in 0..<grid.size.cols {
+                switch grid[r,c] {
+                case .alive:
+                    save[r][c] = 1
+                case .born:
+                    save[r][c] = 2
+                case .died:
+                    save[r][c] = 3
+                case .empty:
+                    save[r][c] = 0
+                }
+            }
+        }
+        return save
+    }
 }
+
+
+
+
+
+
+
+
+
+
