@@ -144,9 +144,11 @@ protocol EngineProtocol {
     var rows: Int { get set }
     var cols: Int { get set }
     var refreshOn: Bool { get set }
-    var updateClosure: ((Grid) -> Void)? { get set }
+    //var updateClosure: ((Grid) -> Void)? { get set }
     func step() -> GridProtocol
     func setSize(rows: Int, cols: Int)
+    func setTimer(refreshOn: Bool)
+    func setRate(rate: Double)
 }
 
 class StandardEngine: EngineProtocol {
@@ -154,12 +156,12 @@ class StandardEngine: EngineProtocol {
     
     var grid: GridProtocol
     var delegate: EngineDelegate?
-    var updateClosure: ((Grid) -> Void)?
+    //var updateClosure: ((Grid) -> Void)?
     var refreshTimer: Timer?
     var rows: Int
     var cols: Int
     var refreshOn: Bool
-    var refreshRate: Double = 0.0 {
+    var refreshRate: Double = 1.0 {
         didSet {
             if (refreshRate > 0.0) && refreshOn {
                 refreshTimer = Timer.scheduledTimer(
@@ -205,5 +207,17 @@ class StandardEngine: EngineProtocol {
         grid = Grid(GridSize(rows: rows, cols: cols))
         self.rows = rows
         self.cols = cols
+        notify()
+    }
+    
+    func setTimer(refreshOn: Bool) {
+        self.refreshOn = refreshOn
+        let triggerDidSet = refreshRate
+        refreshRate = triggerDidSet
+    }
+    
+    func setRate(rate: Double) {
+        refreshTimer?.invalidate()
+        refreshRate = rate
     }
 }

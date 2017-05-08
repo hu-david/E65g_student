@@ -93,6 +93,8 @@ public protocol GridViewDataSource {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         lastTouchedPosition = nil
+        
+        StandardEngine.engine.notify()
     }
     
     var lastTouchedPosition: GridPosition?

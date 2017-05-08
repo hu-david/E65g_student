@@ -9,23 +9,20 @@
 import UIKit
 
 class SimulationViewController: UIViewController, GridViewDataSource, EngineDelegate {
-
+    
+    @IBOutlet weak var gridView: GridView!
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.tabBarController?.tabBar.backgroundColor = UIColor.green
     }
     
-    @IBOutlet weak var gridView: GridView!
-    
-    var engine: EngineProtocol!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        engine = StandardEngine.engine
-        gridView.size = engine.grid.size.rows
-        engine.delegate = self
+        gridView.size = StandardEngine.engine.grid.size.rows
+        StandardEngine.engine.delegate = self
         gridView.setNeedsDisplay()
         gridView.gridDataSource = self
     }
@@ -33,9 +30,8 @@ class SimulationViewController: UIViewController, GridViewDataSource, EngineDele
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        engine = StandardEngine.engine
-        gridView.size = engine.grid.size.rows
-        engine.delegate = self
+        gridView.size = StandardEngine.engine.grid.size.rows
+        StandardEngine.engine.delegate = self
         gridView.setNeedsDisplay()
         gridView.gridDataSource = self
     }
@@ -45,8 +41,8 @@ class SimulationViewController: UIViewController, GridViewDataSource, EngineDele
     }
     
     public subscript (row: Int, col: Int) -> CellState {
-        get { return engine.grid[row,col] }
-        set { engine.grid[row,col] = newValue }
+        get { return StandardEngine.engine.grid[row,col] }
+        set { StandardEngine.engine.grid[row,col] = newValue }
     }
     
     override func didReceiveMemoryWarning() {
@@ -54,7 +50,7 @@ class SimulationViewController: UIViewController, GridViewDataSource, EngineDele
     }
     
     @IBAction func step(_ sender: UIButton) {
-        _ = engine.step()
+        _ = StandardEngine.engine.step()
         gridView.setNeedsDisplay()
     }
 }
