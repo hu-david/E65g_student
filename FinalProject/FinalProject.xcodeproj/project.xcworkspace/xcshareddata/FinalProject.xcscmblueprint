@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "94FCD57E2D7E1AE5E4C16B54D25457B59EA53AA7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "ECD349E1AE4F6154C57450528E342C45E770225A" : 9223372036854775807,
+    "94FCD57E2D7E1AE5E4C16B54D25457B59EA53AA7" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5D130793-BB01-47A7-9DAB-7965C62EA0B1",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "ECD349E1AE4F6154C57450528E342C45E770225A" : "E65g_materials\/",
+    "94FCD57E2D7E1AE5E4C16B54D25457B59EA53AA7" : "E65g_student\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "FinalProject",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "FinalProject\/FinalProject.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/hu-david\/E65g_student.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "94FCD57E2D7E1AE5E4C16B54D25457B59EA53AA7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/rvsrvs\/E65g_materials.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ECD349E1AE4F6154C57450528E342C45E770225A"
+    }
+  ]
+}
